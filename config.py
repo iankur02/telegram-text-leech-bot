@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    API_ID = int(os.environ.get("36629816", "0"))
-    API_HASH = os.environ.get("b074123de6def8946d6bce8b4fff699a", "").strip()
+    API_ID = int(os.environ.get("API_ID", "36629816"))
+    API_HASH = os.environ.get("API_HASH", "b074123de6def8946d6bce8b4fff699a").strip()
     BOT_TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 
     OWNER_ID = [
