@@ -5,7 +5,9 @@ import logging
 from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 from config import Config
-from handlers import (
+
+# Direct module imports (avoids "unknown location" even without __init__.py)
+from handlers.commands import (
     start_command,
     help_command,
     thumb_command,
@@ -13,22 +15,36 @@ from handlers import (
     photo_handler,
     cancel_command,
     stats_command,
+)
+from handlers.text_handler import (
     txt_document_handler,
-    text_response_handler
+    text_response_handler,
 )
 from web import start_web_server
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger("TextLeechBot")
 
 def check_credentials():
-    missing = [k for k, v in [("36629816", Config.API_ID), ("b074123de6def8946d6bce8b4fff699a", Config.API_HASH), ("BOT_TOKEN", Config.BOT_TOKEN)] if not v]
+    missing = []
+    if not Config.API_ID or Config.API_ID == 0:
+        missing.append("API_ID")
+    if not Config.API_HASH:
+        missing.append("API_HASH")
+    if not Config.BOT_TOKEN:
+        missing.append("BOT_TOKEN")
+
     if missing:
-        logger.error(f"Missing environment variables: {', '.join(missing)}")
+        logger.error(f"Missing required environment variables: {', '.join(missing)}")
+        logger.error("Please configure them in Render Environment Variables.")
         sys.exit(1)
 
 async def main():
     check_credentials()
+
     os.makedirs(Config.DOWNLOAD_DIR, exist_ok=True)
     os.makedirs(Config.THUMB_DIR, exist_ok=True)
 
@@ -40,6 +56,7 @@ async def main():
         workdir=Config.DOWNLOAD_DIR
     )
 
+    # Register handlers
     app.add_handler(MessageHandler(start_command, filters.command(["start"]) & filters.private))
     app.add_handler(MessageHandler(help_command, filters.command(["help"]) & filters.private))
     app.add_handler(MessageHandler(thumb_command, filters.command(["thumb"]) & filters.private))
@@ -50,6 +67,7 @@ async def main():
     app.add_handler(MessageHandler(txt_document_handler, filters.document & filters.private))
     app.add_handler(MessageHandler(text_response_handler, filters.text & ~filters.command & filters.private))
 
+    # Health check web server for Render keep-alive
     web_runner = None
     if Config.WEB_SERVER:
         web_runner = await start_web_server()
@@ -57,15 +75,18 @@ async def main():
     logger.info("Starting Telegram Bot...")
     await app.start()
     bot_info = await app.get_me()
-    logger.info(f"Bot connected: @{bot_info.username}")
+    logger.info(f"Bot connected successfully as @{bot_info.username} (ID: {bot_info.id})")
 
     try:
         await asyncio.Event().wait()
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Shutdown signal received...")
     finally:
         if app.is_connected:
             await app.stop()
         if web_runner:
             await web_runner.cleanup()
+        logger.info("Bot stopped cleanly.")
 
 if __name__ == "__main__":
     try:
