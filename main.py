@@ -31,9 +31,9 @@ logger = logging.getLogger("TextLeechBot")
 def check_credentials():
     missing = []
     if not Config.API_ID or Config.API_ID == 0:
-        missing.append("API_ID")
+        missing.append("36629816")
     if not Config.API_HASH:
-        missing.append("API_HASH")
+        missing.append("b074123de6def8946d6bce8b4fff699a")
     if not Config.BOT_TOKEN:
         missing.append("BOT_TOKEN")
 
