@@ -6,7 +6,7 @@ from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 from config import Config
 
-# Direct module imports (avoids "unknown location" even without __init__.py)
+# Direct module imports (prevents namespace "unknown location" errors)
 from handlers.commands import (
     start_command,
     help_command,
