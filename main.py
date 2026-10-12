@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(level
 logger = logging.getLogger("TextLeechBot")
 
 def check_credentials():
-    missing = [k for k, v in [("API_ID", Config.API_ID), ("API_HASH", Config.API_HASH), ("BOT_TOKEN", Config.BOT_TOKEN)] if not v]
+    missing = [k for k, v in [("36629816", Config.API_ID), ("b074123de6def8946d6bce8b4fff699a", Config.API_HASH), ("BOT_TOKEN", Config.BOT_TOKEN)] if not v]
     if missing:
         logger.error(f"Missing environment variables: {', '.join(missing)}")
         sys.exit(1)
