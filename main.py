@@ -6,7 +6,6 @@ from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 from config import Config
 
-# Direct module imports (prevents namespace "unknown location" errors)
 from handlers.commands import (
     start_command,
     help_command,
@@ -56,7 +55,7 @@ async def main():
         workdir=Config.DOWNLOAD_DIR
     )
 
-    # Register handlers
+    # Command Handlers
     app.add_handler(MessageHandler(start_command, filters.command(["start"]) & filters.private))
     app.add_handler(MessageHandler(help_command, filters.command(["help"]) & filters.private))
     app.add_handler(MessageHandler(thumb_command, filters.command(["thumb"]) & filters.private))
@@ -65,7 +64,9 @@ async def main():
     app.add_handler(MessageHandler(stats_command, filters.command(["stats"]) & filters.private))
     app.add_handler(MessageHandler(photo_handler, filters.photo & filters.private))
     app.add_handler(MessageHandler(txt_document_handler, filters.document & filters.private))
-    app.add_handler(MessageHandler(text_response_handler, filters.text & ~filters.command & filters.private))
+    
+    # Text Message Handler (Matches plain text in private chats, excluding slash commands)
+    app.add_handler(MessageHandler(text_response_handler, filters.text & filters.private & ~filters.regex(r"^/")))
 
     # Health check web server for Render keep-alive
     web_runner = None
