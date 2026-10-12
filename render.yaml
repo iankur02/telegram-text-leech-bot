@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: telegram-text-leech-bot
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: API_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: BOT_TOKEN
+        sync: false
+      - key: OWNER_ID
+        sync: false
+      - key: DUMP_CHANNEL
+        value: "0"
+      - key: PORT
+        value: "8080"
+      - key: WEB_SERVER
+        value: "true"
+      - key: PROGRESS_UPDATE_INTERVAL
+        value: "4"
