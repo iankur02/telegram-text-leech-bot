@@ -8,6 +8,7 @@ from core.media import MediaHelper
 
 logger = logging.getLogger(__name__)
 
+
 class ProgressTracker:
     def __init__(self, status_message, action_name: str = "Uploading"):
         self.status_message = status_message
@@ -41,9 +42,11 @@ class ProgressTracker:
 
         try:
             await self.status_message.edit_text(text)
-       except Exception as e:
-    err_str = str(e).lower()
-    if "flood" in err_str:
-        match = re.search(r'(\d+)', str(e))
-        wait = int(match.group(1)) if match else 5
-        await asyncio.sleep(min(wait, 60))
+        except Exception as e:
+            err_str = str(e).lower()
+            if "flood" in err_str:
+                match = re.search(r"(\d+)", str(e))
+                wait = int(match.group(1)) if match else 5
+                await asyncio.sleep(min(wait, 60))
+            else:
+                logger.debug(f"Progress edit failed: {e}")
