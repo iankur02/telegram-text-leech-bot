@@ -41,8 +41,9 @@ class ProgressTracker:
 
         try:
             await self.status_message.edit_text(text)
-        except Exception as e:
-            err_str = str(e).lower()
-            if "flood" in err_str:
-                match = re.search(r'(\d+)', str(e))
-                await asyncio.sleep(int(match.group(1)) if match else 5)
+       except Exception as e:
+    err_str = str(e).lower()
+    if "flood" in err_str:
+        match = re.search(r'(\d+)', str(e))
+        wait = int(match.group(1)) if match else 5
+        await asyncio.sleep(min(wait, 60))
