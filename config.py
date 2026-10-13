@@ -22,11 +22,10 @@ class Config:
     BOT_TOKEN = str(os.environ.get("BOT_TOKEN", "")).strip()
 
     # Owner / Authorized User IDs (comma separated for multiple, or 0 for public)
-    OWNER_ID = [
-        int(x.strip()) for x in os.environ.get("OWNER_ID", "0").split(",") if x.strip().isdigit()
-    ]
-    if not OWNER_ID:
-        OWNER_ID = [0]
+   _owner_raw = os.environ.get("OWNER_ID", "0").strip() or "0"
+OWNER_ID = [int(x) for x in _owner_raw.split(",") if x.strip().lstrip("-").isdigit()]
+if not OWNER_ID:
+    OWNER_ID = [0]
 
     # Dump Channel (Optional Telegram channel/chat ID to forward uploaded videos, 0 if none)
     DUMP_CHANNEL = int(os.environ.get("DUMP_CHANNEL", "0"))
