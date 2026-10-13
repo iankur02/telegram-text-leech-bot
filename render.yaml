@@ -6,10 +6,11 @@ services:
     region: oregon
     dockerfilePath: Dockerfile
     autoDeploy: true
+    healthCheckPath: /health
     envVars:
-      - key: 36629816
+      - key: API_ID
         sync: false
-      - key: b074123de6def8946d6bce8b4fff699a
+      - key: API_HASH
         sync: false
       - key: BOT_TOKEN
         sync: false
